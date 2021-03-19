@@ -7,4 +7,4 @@ The consumer application could subscribe to change of the prediction data, and t
 
 This code implements the following flow (the MLModel part).
 
-![](./images/shifted-rosenbrock-problem.png)
+![](./images/MLaaS-sequence.png)
