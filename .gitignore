@@ -1,0 +1,8 @@
+# IDE
+.vscode
+
+# Byte-compiled / optimized / DLL files
+notebooks/.ipynb_checkpoints/
+
+# Others
+stellio-dev-access.token
