@@ -15,3 +15,5 @@ This repository contains the code for a conceptual 'Machine Learning as a Servic
 ![](./images/MLaaS-sequence.png)
 
 ## What's in this repo?
+* **[app.py, ctes.py]**: An implementation of the MLaaS (MLModel), with no real ML model thoughpredictions are fake, i.e. simply computed from the input data)
+* **[Dockerfile]**: To build a docker for the MLaaS. ***The Docker file expects to find a stellio-dev-access.token file containing the access token to EGM stellio-dev Context Broker***.
