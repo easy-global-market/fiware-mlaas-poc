@@ -1,26 +1,17 @@
 from flask import Flask, request
-from mlpmodel import MLP_3hl_d2bn
 from ctes import AT_CONTEXT, AT_CONTEXT_LINK
 from ctes import MLMODEL_1_UUID, SUBS_MLPROCESSING_UUID
 from ctes import SUBS_DATA_UUID, URL_PATCH_AGRICROPRECORD
 from ctes import ENDPOINT_SUBS_QUERY, ENDPOINT_PREDICT
 from ctes import URL_ENTITIES, URL_SUBSCRIPTION
 import requests
-import torch
-import pickle
 import numpy
 from datetime import datetime
 import pytz
 import logging
 import json
+import pickle
 
-
-# Declare the redox model as a global variable, so that the model
-# are instantiate once and not at each incoming request !
-wheat_redox_model_3hl = None
-
-# Same for the scaler
-wheat_redox_scaler_3hl = None
 
 # Setting logs
 logging.basicConfig(filename='/data/predict-redox.log', level=logging.INFO)
@@ -113,17 +104,14 @@ def predict():
         spectrum = data['data'][0]['absorbance'][0]['value']
         logging.info(f'raw spectrum: {spectrum}')
 
-        # Transform the spectrum string into an array of 256 float which is
-        # the data type the ML algorithm is expecting
+        # Transform the spectrum string into an array of 256 float
         spectrum = [float(item) for item in spectrum.split('-')]
         spectrum = numpy.array(spectrum).reshape(1, -1)
         logging.info(f'spectrum as numpy array: {spectrum}')
 
-        # Round redox to 0 and transform to int to avoid displaying
-        # values as 145.0 instead of 145
-        spectrum_std = wheat_redox_scaler_3hl.transform(spectrum)
-        redox_3hl = int(round(wheat_redox_model_3hl.predict(
-            torch.Tensor(spectrum_std)), 0))
+        # 'Predict' redox, i.e. takes the first value of the absorbance,
+        # multiply by 1000 and convert to an int!
+        redox_3hl = int(spectrum[0][0]*1000)
         logging.info(f'Redox prediction: {redox_3hl}')
 
         # Then POST the redox predicted value into the AgriCropRecord entity
@@ -239,23 +227,6 @@ if __name__ == '__main__':
     r = requests.post(URL_SUBSCRIPTION, json=json_d, headers=HEADERS_POST)
     logging.info(f'Status code creation of MLModel subscription: \
                  {r.status_code}')
-
-    # WHEAT #
-    # loading scaler
-    with open(
-            './pytorch-models-wheat/wheat.redox.std.scaler.20210218.21h07.pickle',
-            'rb') as f:
-        wheat_redox_scaler_3hl = pickle.load(f)
-
-    # Instantiate an empty model
-    wheat_redox_model_3hl = MLP_3hl_d2bn()
-
-    # Then load the models from file and set mode in eval mode (we're just
-    # doing predictions, no training)
-    wheat_redox_model_3hl.load_state_dict(
-        torch.load(
-            './pytorch-models-wheat/wheat.redox.model.20210218.21h07.pt'))
-    wheat_redox_model_3hl.eval()
 
     # Run Flask server
     app.run(host='0.0.0.0', port=80)
