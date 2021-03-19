@@ -1,10 +1,17 @@
 # FIWARE ML as a Service POC
-A simple Proof Of Concept for a FIWARE MLaaS.
+**A simple Proof Of Concept for a FIWARE MLaaS.**
 
-This code is a ML algorithm that performs prediction from data stored into a FIWARE context broker (Stellio), and then store the prediction back into Stellio.
+## Concept
+This repository contains the code for a conceptual 'Machine Learning as a Service' composant providing prediction service from/to a FIWARE context broker. In a nutshell a MLaaS can be used by a Consumer Application using the following procedure (also described as a sequence diagram below):
 
-The consumer application could subscribe to change of the prediction data, and therefore be notified whenever a new prediction has been performed.
-
-This code implements the following flow (the MLModel part).
+* As a prerequisite (flow 2-4), a MLaaS (MLModel) has been deployed and has subscribed to the Context Broker in order to be notified when a consumer application request to use its service. The notification contains a query for the MLaaS to identify the data on which the prediction shall be made.
+* A consumer application creates a MLProcessing entity in the context broker (flow 5), which contains a reference to the desired MLaaS and a reference (as a query) to the data on which predictions have to be made.
+* Finally the consumer application subscribes to the prediction (data results of the prediction performed by MLaaS)
+* The creation of the MLProcessing entity by the consumer app triggers a notification towards MLaaS. The MLaaS uses the content of the notification to find out which data to use for predicting and susbcribe to changes of that data (flow 7-8).
+* Whenever that data changes, a notification is received by MLaaS and triggers a prediction (flow 9-10).
+* MLaaS saves the prediction into the Context Broker (flow 11)
+* Finally the consumer application receives a notification of the predicted data (flow 12).
 
 ![](./images/MLaaS-sequence.png)
+
+## What's in this repo?
