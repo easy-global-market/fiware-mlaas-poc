@@ -173,11 +173,11 @@ if __name__ == '__main__':
         'type': 'MLModel',
         'name': {
             'type': 'Property',
-            'value': 'Redox pontential'
+            'value': 'Redox potential'
         },
         'description': {
             'type': 'Property',
-            'value': 'Redox pontential prediction from NIR absorbance'
+            'value': 'Redox potential prediction from NIR absorbance'
         },
         'algorithm': {
             'type': 'Property',
