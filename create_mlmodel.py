@@ -1,17 +1,16 @@
 from ctes import AT_CONTEXT
 from ctes import URL_ENTITIES
 import requests
+import json
 
-MLMODEL_UUID = 'urn:ngsi-ld:MLModel:d490e4ec-a007-493a-ba16-d00ed0ddd577'
+MLMODEL_UUID = 'urn:ngsi-ld:MLModel:d490e4ec-a007-493a-ba16-d00ed0ddd578'
 MLMODEL_NAME = "Consumption prediction"
 MLMODEL_DESCRIPTION = "Consumption prediction from litres information on a specific DMA"
 MLMODEL_ALGORITHM = "Multi-Layer Perceptron"
-MLMODEL_VERSION = 0.1
-MLMODEL_PREDICT_URL = "https://some-provider/predict"
+MLMODEL_VERSION = 0.2
+MLMODEL_PREDICT_URL = "http://127.0.0.1:5000/predict"
 
-
-HEADERS_POST = {
-    # 'Authorization': 'Bearer ' + ACCESS_TOKEN,
+HEADERS = {
     'Content-Type': 'application/ld+json'
 }
 
@@ -50,7 +49,7 @@ json_d = {
     }
 }
 
-# POST REQUEST
-# Expecting 201 response
-r = requests.post(URL_ENTITIES, json=json_d, headers=HEADERS_POST)
+r = requests.post(URL_ENTITIES, json=json_d, headers=HEADERS)
 print(f'Status code creation of MLModel entity: {r.status_code}')
+if (r.status_code != 201):
+    print(f'Error response is {json.dumps(r.json(), indent=2)}')

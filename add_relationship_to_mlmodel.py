@@ -3,8 +3,8 @@ import json
 import requests
 
 ENTITY_ID = 'urn:ngsi-ld:WaterConsumption:202D03'
-MLMODEL_ID = 'urn:ngsi-ld:MLModel:1234'
-DATASET_ID = 'urn:ngsi-ld:Dataset:1234'
+MLMODEL_ID = 'urn:ngsi-ld:MLModel:d490e4ec-a007-493a-ba16-d00ed0ddd578'
+DATASET_ID = 'urn:ngsi-ld:Dataset:d490e4ec-a007-493a-ba16-d00ed0ddd578'
 
 HEADERS = {
     'Content-Type': 'application/json',
@@ -21,8 +21,5 @@ json_d = {
 
 r = requests.post(URL_ENTITIES + ENTITY_ID + '/attrs', json=json_d, headers=HEADERS)
 print(f'Response status code: {r.status_code}')
-
-# Should reply with a 204 No Content
-# In case there is an error, uncomment following lines to display the error response
-# print('Response body:')
-# print(json.dumps(r.json(), indent=2))
+if (r.status_code != 204):
+    print(f'Error response is {json.dumps(r.json(), indent=2)}')

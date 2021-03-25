@@ -17,3 +17,51 @@ This repository contains the code for a conceptual 'Machine Learning as a Servic
 ## What's in this repo?
 * **[app.py, ctes.py]**: An implementation of the MLaaS (MLModel), with no real ML model though. The predictions are fake, i.e. simply computed from the input data (an array of 256 float values. "Predicting" is about taking the first value of the array, multiplying it by 1000 and return an int of this value, e.g. **0.165428** will be "predicted" as **165**).
 * **[Dockerfile]**: To build a docker for the MLaaS. ***The Docker file expects to find a stellio-dev-access.token file containing the access token to EGM stellio-dev Context Broker***.
+
+## Getting started
+
+* Configure the global variables in `ctes.py`
+
+* Create the MLModel entities (adapt the variables in the file)
+
+```
+python3 create_mlmodel.py
+```
+
+* List your models to check the creations went fine
+
+```
+python3 get_mlmodels.py | jq
+```
+
+* For tests purposes, you can manually create a WaterConsumption entity that will hold input data and prediction results
+
+```
+python3 create_waterconsumption.py
+```
+
+* Add a relationship between the WaterConsumption entity and a previously created MLModel entity
+
+```
+python3 add_measure_waterconsumption.py
+```
+
+Similarly, you can use the `delete_relationship_to_mlmodels.py` to delete a relationship between a WaterConsumtion entity and a MLModel entity.
+
+* Create a subscription for the BentoML proxy to be notify when there is an update on a WaterConsumption entity
+
+```
+python3 create_subscription.py
+```
+
+* Update a value on the WaterConsumption entity to trigger a new prediction in the BentoML module
+
+```
+python3 add_measure_waterconsumption.py
+```
+
+* Update a value in a MLModel entity (e.g. the URL of the BentoML module)
+
+```
+python3 update_mlmodel_attribute.py
+```

@@ -4,7 +4,6 @@ import requests
 SUBSCRIPTION_UUID = 'urn:ngsi-ld:Subscription:62f5ebc1-0fcc-483b-acbf-2004a0671906'
 
 HEADERS = {
-    # 'Authorization': 'Bearer ' + ACCESS_TOKEN,
     'Content-Type': 'application/ld+json'
 }
 

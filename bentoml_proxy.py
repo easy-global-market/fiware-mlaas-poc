@@ -28,6 +28,19 @@ def getMlModel(mlModelId):
         logging.info(f'Response is {json.dumps(r.json(), indent=2)}')
         return None
 
+def sendPredictToBento(predictUrl, inputData):
+    HEADERS = {
+        'Content-Type': 'application/json'
+    }
+
+    r = requests.post(predictUrl, inputData, headers=HEADERS)
+    if (r.status_code == 200):
+        return r.json()
+    else:
+        logging.info(f'Unexpected response received from Bento: {r.status_code}')
+        logging.info(f'Response is {json.dumps(r.json(), indent=2)}')
+        return None
+
 @app.route('/predict', methods=['POST'])
 def predict():
     '''
@@ -56,7 +69,9 @@ def predict():
             # get the input value using inputAttribute information
             inputValue = entity[inputAttributes]['value']
             # send the input value to the bentoPredictUrl
-            # TODO
+            outputValue = sendPredictToBento(bentoPredictUrl, inputValue)
+            if (outputValue is None):
+                continue
 
             # Then POST the redox predicted value into the AgriCropRecord entity
             # Set the observed_at property to the current time with the appropriate
@@ -74,7 +89,7 @@ def predict():
             json_d = {
                 outputAttributes: {
                     'type': 'Property',
-                    'value': inputValue,
+                    'value': outputValue,
                     'observedAt': observed_at,
                     'datasetId': 'urn:ngsi-ld:Dataset:' + slugify(mlModelEntity['name']['value']) + ':' + slugify(str(mlModelEntity['version']['value'])),
                     'computedBy': {
@@ -86,6 +101,7 @@ def predict():
 
             postUrl = URL_ENTITIES + entity['id'] + '/attrs/'
             logging.info(f'Sending update to URL: {postUrl}')
+            logging.info(json.dumps(json_d, indent=2))
             r = requests.post(postUrl, json=json_d, headers=HEADERS)
             logging.info(f'Status code sending the result: {r.status_code}')
             if (r.status_code != 204):

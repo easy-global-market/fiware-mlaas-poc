@@ -3,7 +3,6 @@ import json
 import requests
 
 HEADERS = {
-    # 'Authorization': 'Bearer ' + ACCESS_TOKEN,
     'Content-Type': 'application/ld+json',
     'Link': AT_CONTEXT_LINK
 }
