@@ -19,9 +19,9 @@ AT_CONTEXT = [
     'https://raw.githubusercontent.com/easy-global-market/ngsild-api-data-models/feature/mlaas-models/mlaas/jsonld-contexts/mlaas-compound.jsonld'
 ]
 
-AT_CONTEXT_LINK = '<https://raw.githubusercontent.com/senseen/'\
-    'ngsild-api-data-models/main/scanner/jsonld-contexts/'\
-    'scanSmartMeter-compound.jsonld>; '\
+AT_CONTEXT_LINK = '<https://raw.githubusercontent.com/easy-global-market/'\
+    'ngsild-api-data-models/feature/mlaas-models/mlaas/jsonld-contexts/'\
+    'mlaas-compound.jsonld>; '\
     'rel=http://www.w3.org/ns/json-ld#context; type=application/json'
 
 # ENDPOINTS
