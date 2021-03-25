@@ -1,7 +1,6 @@
 from ctes import AT_CONTEXT
 from ctes import URL_ENTITIES
 import requests
-import logging
 
 MLMODEL_UUID = 'urn:ngsi-ld:MLModel:d490e4ec-a007-493a-ba16-d00ed0ddd577'
 MLMODEL_NAME = "Consumption prediction"
@@ -15,8 +14,6 @@ HEADERS_POST = {
     # 'Authorization': 'Bearer ' + ACCESS_TOKEN,
     'Content-Type': 'application/ld+json'
 }
-
-logging.basicConfig(level=logging.INFO)
 
 # Template for a MLModel entity, adapt the variables above
 json_d = {
@@ -56,4 +53,4 @@ json_d = {
 # POST REQUEST
 # Expecting 201 response
 r = requests.post(URL_ENTITIES, json=json_d, headers=HEADERS_POST)
-logging.info(f'Status code creation of MLModel entity: {r.status_code}')
+print(f'Status code creation of MLModel entity: {r.status_code}')
