@@ -2,6 +2,7 @@ from flask import Flask, request
 from ctes import AT_CONTEXT_LINK, URL_ENTITIES
 from slugify import slugify
 from datetime import datetime
+import numpy
 import requests
 import pytz
 import logging
@@ -41,6 +42,11 @@ def sendPredictToBento(predictUrl, inputData):
         logging.info(f'Response is {json.dumps(r.json(), indent=2)}')
         return None
 
+# If a transformation is needed before sending data to the ML model
+# adapt this method
+def transformInputValue(inputValue):
+    return inputValue
+
 @app.route('/predict', methods=['POST'])
 def predict():
     '''
@@ -48,38 +54,36 @@ def predict():
     prediction) and predict.
     '''
     if request.method == 'POST':
-        # Get the data, that would be a NGSI-LD format
+        # Get the data entity that is inside the NGSI-LD notification
         data = json.loads(request.get_data(as_text=True))
         entity = data['data'][0]
         logging.info(f'Received entity: {entity}')
 
+        # Loop through all the active models and send them the input value for a prediction
         mlmodels = entity['activeModels']
         for mlModelRel in mlmodels:
-            logging.info(f'Inspecting: {mlModelRel}')
+            logging.info(f'Dealing with MLModel: {mlModelRel}')
+
             # get the MLModel entity from the Context Broker
             mlModelEntity = getMlModel(mlModelRel['object'])
             if (mlModelEntity is None):
                 continue
             logging.info(f'Retrieved MLModel entity: {mlModelEntity}')
+
             # get the info we need from the MLModel entity
             bentoPredictUrl = mlModelEntity['bentoPredictUrl']['value']
             inputAttributes = mlModelEntity['inputAttributes']['value']
             outputAttributes = mlModelEntity['outputAttributes']['value']
             logging.info(f'ML Model info: {bentoPredictUrl} / {inputAttributes} / {outputAttributes}')
-            # get the input value using inputAttribute information
+
+            # get and prepare the input value using inputAttribute information
             inputValue = entity[inputAttributes]['value']
-            # send the input value to the bentoPredictUrl
-            outputValue = sendPredictToBento(bentoPredictUrl, inputValue)
+            preparedInputValue = transformInputValue(inputValue)
+            outputValue = sendPredictToBento(bentoPredictUrl, preparedInputValue)
             if (outputValue is None):
                 continue
 
-            # Then POST the redox predicted value into the AgriCropRecord entity
-            # Set the observed_at property to the current time with the appropriate
-            # timezone.
-            timezone_France = pytz.timezone('Europe/Paris')
-            observed_at = timezone_France.\
-                localize(datetime.now().replace(microsecond=0)).isoformat()
-            logging.info(f'observed_at: {observed_at}')
+            # publish the predicted value into the source entity
 
             HEADERS = {
                 'Content-Type': 'application/json',
@@ -90,7 +94,7 @@ def predict():
                 outputAttributes: {
                     'type': 'Property',
                     'value': outputValue,
-                    'observedAt': observed_at,
+                    'observedAt': datetime.now().astimezone(pytz.UTC).isoformat(),
                     'datasetId': 'urn:ngsi-ld:Dataset:' + slugify(mlModelEntity['name']['value']) + ':' + slugify(str(mlModelEntity['version']['value'])),
                     'computedBy': {
                         'type': 'Relationship',
