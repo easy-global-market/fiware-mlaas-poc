@@ -14,10 +14,6 @@ This repository contains the code for a conceptual 'Machine Learning as a Servic
 
 ![](./images/MLaaS-sequence.png)
 
-## What's in this repo?
-* **[app.py, ctes.py]**: An implementation of the MLaaS (MLModel), with no real ML model though. The predictions are fake, i.e. simply computed from the input data (an array of 256 float values. "Predicting" is about taking the first value of the array, multiplying it by 1000 and return an int of this value, e.g. **0.165428** will be "predicted" as **165**).
-* **[Dockerfile]**: To build a docker for the MLaaS. ***The Docker file expects to find a stellio-dev-access.token file containing the access token to EGM stellio-dev Context Broker***.
-
 ## Getting started
 
 * Configure the global variables in `ctes.py`
@@ -64,4 +60,18 @@ python3 add_measure_waterconsumption.py
 
 ```
 python3 update_mlmodel_attribute.py
+```
+
+## Building a Docker images
+
+* Build a new image
+
+```
+docker build -t easyglobalmarket/bentoml_ngsild_proxy .
+```
+
+* Run it
+
+```
+docker run -p 5000:5000 easyglobalmarket/bentoml_ngsild_proxy
 ```

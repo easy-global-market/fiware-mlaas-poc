@@ -10,7 +10,7 @@ import json
 
 
 # Setting logs
-logging.basicConfig(filename='./logs/bentoml_proxy.log', level=logging.INFO)
+logging.basicConfig(filename='./bentoml_proxy.log', level=logging.INFO)
 
 
 app = Flask(__name__)

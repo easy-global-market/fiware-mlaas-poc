@@ -1,5 +1,5 @@
-FROM python:3.7-stretch
-LABEL maintainer="didier.dumet@egm.io"
+FROM python:3.7-slim
+LABEL maintainer="EGM"
 
 # update / upgrade
 RUN apt-get update -y && \
@@ -12,13 +12,10 @@ WORKDIR  /mlaas/
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy all the files from the project’s root to the working directory
-COPY *.py ./
-COPY stellio-dev-access.token ./
-
-WORKDIR /mlaas
+COPY ctes.py .
+COPY bentoml_proxy.py .
 
 EXPOSE 5000
 
 # Running Python Application
-ENTRYPOINT ["python3", "/mlaas/app.py"]
+ENTRYPOINT ["python3", "/mlaas/bentoml_proxy.py"]
