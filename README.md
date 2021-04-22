@@ -39,7 +39,7 @@ python3 create_waterconsumption.py
 * Add a relationship between the WaterConsumption entity and a previously created MLModel entity
 
 ```
-python3 add_measure_waterconsumption.py
+python3 add_relationship_to_mlmodels.py
 ```
 
 Similarly, you can use the `delete_relationship_to_mlmodels.py` to delete a relationship between a WaterConsumtion entity and a MLModel entity.
