@@ -2,7 +2,7 @@
 **A simple Proof Of Concept for a FIWARE MLaaS.**
 
 ## Concept
-This repository contains the code for a conceptual 'Machine Learning as a Service' composant providing prediction service from/to a FIWARE context broker. In a nutshell a MLaaS can be used by a Consumer Application using the following procedure (also described as a sequence diagram below):
+This repository contains the code for a conceptual 'Machine Learning as a Service' component providing prediction service from/to a FIWARE context broker. In a nutshell a MLaaS can be used by a Consumer Application using the following procedure (also described as a sequence diagram below):
 
 * As a prerequisite (flow 2-4), a MLaaS (MLModel) has been deployed and has subscribed to the Context Broker in order to be notified when a consumer application request to use its service. The notification contains a query for the MLaaS to identify the data on which the prediction shall be made.
 * A consumer application creates a MLProcessing entity in the context broker (flow 5), which contains a reference to the desired MLaaS and a reference (as a query) to the data on which predictions have to be made.
